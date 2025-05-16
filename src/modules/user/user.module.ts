@@ -12,7 +12,7 @@ import { AuthService } from './auth.service';
       global: true,
       secret: 'test-key',
       signOptions: {
-        expiresIn: 600,
+        expiresIn:3600,
       },
     }),
   ],

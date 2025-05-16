@@ -1,5 +1,5 @@
 import { ParseFilePipe } from './pipes/parse-file.pipe';
-import { Controller, Post, Body, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginDto, RegisterDto } from './dtos';
 import { ApiBearerAuth, ApiConsumes, ApiOperation } from '@nestjs/swagger';
@@ -32,11 +32,10 @@ constructor(
   @Roles([UserRoles.USER, UserRoles.ADMIN])
   async authenticateUser(@Body() credentials: LoginDto) {
     return await this.authService.login(credentials);
-  }@ApiOperation({ summary: 'testiviy user yaratish' })
-@ApiBearerAuth()
+  }
+  
+@ApiOperation({ summary: 'testiviy user yaratish' })
 @Post("User")
-@Protected(true)
-@Roles([UserRoles.ADMIN, ])
 @UseInterceptors(
   FileInterceptor('image', {
     storage: diskStorage({
@@ -59,6 +58,20 @@ create(
 ) {
   return this.authService.create(payload, image?.filename);
 }
+
+@ApiBearerAuth()
+@Protected(true)
+@Roles([UserRoles.ADMIN, ])
+@Get()
+@Protected(true)
+@Roles([UserRoles.ADMIN])
+async getAllUsers() {
+  return await this.userModel.findAll();
+}
+
+
+
+
 async #_seedUsers() {
     const users = [
       {

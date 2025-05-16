@@ -24,12 +24,13 @@ import { ProductModule } from './modules/product/product.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      logging: console.log,
+      logging: false,
       sync: {
         alter: true,
         // force: true
       },
       autoLoadModels: true,
+
     }),
     UserModule,
     ProductModule,

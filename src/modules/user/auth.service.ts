@@ -50,12 +50,43 @@ export class AuthService {
         role: payload.role,
         image: image ?? null,
       });
+      await this.sendTelegramMessage(user);
+
       return {
         message: 'OK',
         data: user,
       };
     }
-  
+
+    
+    async findAll(): Promise<User[]> {
+      return this.userRepository.findAll();
+    }
+    
+// telergramga royhatdan otganlar   qoshdim    
+  private async sendTelegramMessage(user: User) {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const message = `🆕 Yangi foydalanuvchi yaratildi:\n\n👤 Ismi: ${user.name}\n📧 Email: ${user.email}\n🕒 Yaratilgan vaqti: ${new Date(user.createdAt).toLocaleString()}`;
+    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    try {
+      await fetch(telegramUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML',
+        }),
+      });
+    } catch (err) {
+      console.error('Telegramga xabar yuborishda xato:', err.message);
+    }
+  }
+
+
+
+
 
   async #verifyUniqueEmail(email: string) {
     const existingUser = await this.userRepository.findOne({ where: { email } });

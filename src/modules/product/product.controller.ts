@@ -14,7 +14,7 @@ import { InjectModel } from '@nestjs/sequelize';
 @ApiBearerAuth() 
 @Controller('products')
 @Protected(true)
-@Roles([UserRoles.ADMIN])
+@Roles([UserRoles.ADMIN,UserRoles.USER])
 export class ProductController {
   constructor(private readonly productService: ProductService
 ,@InjectModel(Product) private readonly productModel: typeof Product,
@@ -77,7 +77,6 @@ findAll(
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productService.remove(id);
   }
-
 async #_seedProduct() {
 const sampleProducts = [
   { name: 'car1', price: 649.99, image: 'img1.jpg', status: 'available', stock: 12, discount: 10, rating: 4.7 },
